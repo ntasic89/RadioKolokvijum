@@ -29,6 +29,7 @@ public class UISwing extends JFrame {
 	private JButton btnPlusMhz;
 
 	protected Radio Radio;
+	private JButton btnPopravi;
 	
 	/*
 	 * Create the application.
@@ -49,6 +50,7 @@ public class UISwing extends JFrame {
 		btnMinusVol.setEnabled(true);
 		btnPlusMhz.setEnabled(true);
 		btnMinusMhz.setEnabled(true);
+		btnPopravi.setEnabled(false);
 	}
 	
 	protected void setOFFState() {
@@ -61,8 +63,27 @@ public class UISwing extends JFrame {
 		btnMinusMhz.setEnabled(false);
 		btnOFF.setEnabled(false);
 		btnON.setEnabled(true);
+		btnPopravi.setEnabled(false);
 	}
 	
+	protected void setOUTState() {
+		Radio.StanjeOUT();
+		txtMhz.setText("");
+		txtVol.setText("");
+		btnPlusVol.setEnabled(false);
+		btnMinusVol.setEnabled(false);
+		btnPlusMhz.setEnabled(false);
+		btnMinusMhz.setEnabled(false);
+		btnOFF.setEnabled(false);
+		btnON.setEnabled(false);
+		btnPopravi.setEnabled(true);
+	}
+	
+	protected void StateCheck() {
+		if (Radio.getStanje() == Stanje.sOUT) {
+			setOUTState();
+		}
+	}
 	
 	
 	/**
@@ -71,7 +92,7 @@ public class UISwing extends JFrame {
 	public void frame() {
 		setTitle("Radio");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 300, 250);
+		setBounds(100, 100, 300, 280);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -88,6 +109,8 @@ public class UISwing extends JFrame {
 		btnMinusMhz.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Radio.MinusFreq();
+				Radio.ProveraBrojac();
+				StateCheck();
 				txtMhz.setText(String.valueOf(Radio.getFreq()));
 			}
 		});
@@ -98,6 +121,8 @@ public class UISwing extends JFrame {
 		btnPlusMhz.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Radio.PlusFreq();
+				Radio.ProveraBrojac();
+				StateCheck();
 				txtMhz.setText(String.valueOf(Radio.getFreq()));
 			}
 		});
@@ -133,6 +158,8 @@ public class UISwing extends JFrame {
 		btnPlusVol.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Radio.PlusVol();
+				Radio.ProveraBrojac();
+				StateCheck();
 				txtVol.setText(String.valueOf(Radio.getVol()));
 			}
 		});
@@ -143,10 +170,21 @@ public class UISwing extends JFrame {
 		btnMinusVol.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Radio.MinusVol();
+				Radio.ProveraBrojac();
+				StateCheck();
 				txtVol.setText(String.valueOf(Radio.getVol()));
 			}
 		});
 		btnMinusVol.setBounds(70, 158, 60, 38);
 		contentPane.add(btnMinusVol);
+		
+		btnPopravi = new JButton("Popravi");
+		btnPopravi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setOFFState();
+			}
+		});
+		btnPopravi.setBounds(10, 210, 260, 23);
+		contentPane.add(btnPopravi);
 	}
 }
